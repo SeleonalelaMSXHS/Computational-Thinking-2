@@ -126,7 +126,8 @@ Let's change the `x <- 5` to `x <- "five"`. Run this code, which attempts to do 
 Remember, this will give you an error if you try to render the document, so substitute the `{r}` for `{r eval = FALSE}` when in the source editor.
 
 ```{r}
-x <- "five"
+x <- 5 # I had to change the "five" back to "5" 
+       # or else I could not Render my pdf.
 
 # Check if the value of x is greater than 10
 if(x > 10)
@@ -141,7 +142,7 @@ if(x > 10)
 ```
 
 
-```{r eval = FALSE, echo = FALSE}
+```{r}
 traceback()
 
 #Recieved these additional errors, so traceback was unable to run.
@@ -529,25 +530,29 @@ new_bisonF1 <- new_bisonF %>% # naming output of this code
   # Call the new column bison_fertility
   mutate(bison_fertility = case_when(
     # bison < 2 years old will have a value in the new column = "Immature Reduced Fertility"
-    # bison > 9 years will be recorded as "Older Reduced Fertility"
+# bison < 2 years will be recorded as "Immature Reduced Fertility"
     bison_age < 2 ~ "Immature Reduced Fertility",
-    bison_age == 2 ~ "Highly Fertile",
-    bison_age == 3 ~ "Highly Fertile",
-    bison_age == 4 ~ "Highly Fertile",
-    bison_age == 5 ~ "Highly Fertile",
-    bison_age == 6 ~ "Highly Fertile",
-    bison_age == 7 ~ "Highly Fertile",
-    bison_age == 8 ~ "Highly Fertile",
-    bison_age == 9 ~ "Highly Fertile",
+    # bison_age == 2 ~ "Highly Fertile",
+    # bison_age == 3 ~ "Highly Fertile",
+    # bison_age == 4 ~ "Highly Fertile",
+    # bison_age == 5 ~ "Highly Fertile",
+    # bison_age == 6 ~ "Highly Fertile",
+    # bison_age == 7 ~ "Highly Fertile",
+    # bison_age == 8 ~ "Highly Fertile",
+    # bison_age == 9 ~ "Highly Fertile",
+# bison between 2 and 9 years old will be recorded as "Highly Fertile"
+    bison_age >= 2 & bison_age <= 9 ~ "Highly Fertile",
+# bison older than 9 years will be recorded as " Older Reduced Fertility"
     bison_age > 9 ~ "Older Reduced Fertility",
-    # bison between 2 and 9 years old will be recorded as "Older Reduced Fertility"
-    .default = "Unknown Age" # any age that is not listed will be inpute as "Unknown age".
+    .default = "Unknown Age" # any age that is not listed will be inputed as "Unknown age".
   ))
  
 head(new_bisonF1)# checking to see column was made correctly in new data.frame.
 ```
 
 #### Graph:
+
+I wanted to make some graphs to help compare fertility, age, and weight, to see if there are any noticeable patterns/trends.  
 
 ```{r}
 Female_Bison_Plot1 <- ggplot(data = new_bisonF1, aes(x=bison_fertility, y=weight_kg))+
@@ -559,6 +564,10 @@ Female_Bison_Plot1
 
 
 ```{r}
+# for this graph I did use Chat GPT 
+# to help with finding what geom_plot could more effectively 
+# represented the patterns I saw in the first graph.
+
 ggplot(data = new_bisonF1, aes(x = bison_fertility, y = animal_weight)) +
   geom_violin(fill = "grey", color = NA) +
   geom_jitter(aes(color = bison_age), width = 0.09, alpha = 0.7) +
